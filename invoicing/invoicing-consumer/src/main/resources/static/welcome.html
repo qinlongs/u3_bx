@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="js/jquery-1.12.4.js"></script>
+<script type="application/javascript" src="js/common.js"></script>
+<script>
+    $(function () {
+        var token = getCookie("token");
+        alert(token);
+        var userName = getCookie("userName");
+        alert(userName);
+        $(".one").text(userName);
+        $.ajax({
+            url:"productList",
+            type:"get",
+            data:"token="+token,
+            dataType:"json",
+            success:function (result) {
+                alert(JSON.stringify(result))
+            }
+
+        })
+        list("");
+        prodcut();
+    })
+    function loginOut() {
+        var token = getCookie("token");
+        $.ajax({
+            url:"loginOut",
+            type:"get",
+            data:"token="+token,
+            success:function (result){
+                location.href="index.html";
+            }
+        })
+        
+    }
+    function list(param) {
+        var token = getCookie("token");
+        if(param==null || param==''){
+            var param={};
+            param.curPage=1;
+        }
+        param.pageSize=5;
+        $.ajax({
+            url:"list?token="+token,
+            type:"post",
+            data:param,
+            success:function (result) {
+                $("#list").html(result)
+            }
+        })
+    }
+
+    function prodcut() {
+        var token = getCookie("token");
+        $.ajax({
+            url:"product?token="+token,
+            type:"get",
+            success:function (result) {
+                $("#product").html(result)
+            }
+        })
+    }
+    function deleteInfo(id) {
+        var token = getCookie("token");
+        $.ajax({
+            url:"deleteInfo?token="+token,
+            type:"post",
+            data:"id="+id,
+            success:function (result){
+                alert("删除成功")
+                list("");
+            }
+        })
+    }
+    /*分页查询*/
+    function startPage() {
+        var param={};
+        param.curPage=1;
+        list(param);
+    }
+    function upPage() {
+        var totalPageCount=$("#totalPageCount").text();
+        var curPage=$("#curPage").text();
+        if(curPage>1){
+            curPage--;
+            var param={};
+            param.curPage=curPage;
+            list(param);
+        }
+
+    }
+    function endPage() {
+        var totalPageCount=$("#totalPageCount").text();
+        var param={};
+        param.curPage=totalPageCount;
+        list(param);
+    }
+    function nextPage() {
+        var curPage=$("#curPage").text();
+        var totalPageCount=$("#totalPageCount").text();
+        if(curPage<totalPageCount){
+            curPage++;
+            var param={};
+            param.curPage=curPage;
+            list(param);
+        }
+    }
+    function addSale() {
+        var token = getCookie("token");
+        $.ajax({
+            url:"addSale",
+            type:"get",
+            data:"token="+token,
+            success:function (result) {
+                $("#list").html(result);
+            }
+        })
+    }
+    function addSales() {
+        var token = getCookie("token");
+        var productId = $("#select option:selected").val();
+        var price = $("#price").val();
+        var quantity = $("#quantity").val();
+        var totalPrice=price*quantity;
+        var param={};
+        param.productId= productId;
+        param.price= price;
+        param.quantity= quantity;
+        param.totalPrice=totalPrice;
+        alert(JSON.stringify(param))
+
+        $.ajax({
+            url:"addSale?token="+token,
+            type:"post",
+            data:param,
+            dataType:"json",
+            success:function (result) {
+                alert("添加陈宫")
+            }
+
+        })
+
+    }
+
+    function queryQu() {
+        var token = getCookie("token");
+        var id = $("#select option:selected").val();
+        $.ajax({
+            url:"chaxun?token="+token,
+            type:"post",
+            data:"id="+id,
+            dataType:"json",
+            success:function (result) {
+                $("#quantity").html(result.quantity)
+            }
+
+        })
+
+    }
+    /*function addSales() {
+        var token = getCookie("token");
+        var productId = $("#select option:selected").val();
+        var price = $("#price").val();
+        var quantity = $("#quantity").val();
+        var totalPrice=price*quantity;
+        var param={};
+        param.productId= productId;
+        param.price= price;
+        param.quantity= quantity;
+        param.totalPrice=totalPrice;
+        param.token=token;
+        alert(JSON.stringify(param))
+
+        $.ajax({
+            url:"addSale",
+            type:"post",
+            data:param,
+            dataType:"json",
+            success:function (result) {
+                alert("添加陈宫")
+            }
+
+
+        })
+
+    }*/
+</script>
+<body>
+    <div class="con">
+        欢迎<span class="one"></span>登录;<a href="javascript:loginOut()">退出登录</a>
+    </div>
+    <div>
+        <input type="button" onclick="addSale()" value="添加"/>
+        <span id="product"></span>
+
+        <span id="quantity"></span>
+
+    </div>
+
+    <div id="list">
+
+
+    </div>
+</body>
+</html>
