@@ -6,6 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="bx-common" />
+        <module name="bx-policy-consumer" />
+        <module name="bx-policy-provider" />
         <module name="bxcommon" />
       </profile>
     </annotationProcessing>
